@@ -1,21 +1,28 @@
+from typing import Callable
 from fastmcp import FastMCP
-from fastmcp.tools import tool
-
-
-class Tools:
-    @tool()
-    @staticmethod
-    def tool_one(self) -> None:
-        print("tool_one executed")
+from fastmcp.prompts import prompt
 
 
 class Server:
-    def __init__(self) -> None:
-        self.server: FastMCP = FastMCP("MyMCP")
-        self.server.add_tool(Tools.tool_one)
+    def __init__(self, title: str = "MyMCP") -> None:
+        self.server: FastMCP = FastMCP(title)
 
-    def stdio(self) -> None:
-        return self.server.run()
+    def add_tool(self, tool: Callable) -> None:
+        self.server.add_tool(tool)
 
     def http(self) -> None:
-        return self.server.run(transport="http", host="0.0.0.0", port=9000)
+        self.server.run(transport="http", host="0.0.0.0", port=9000)
+
+    def stdio(self) -> None:
+        self.server.run()
+
+
+class Client:
+    def __init__(self) -> None:
+        pass
+
+    def discover(self) -> None:
+        pass
+
+    def call(self, tool: str) -> None:
+        pass

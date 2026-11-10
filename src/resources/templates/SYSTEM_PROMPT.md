@@ -1,3 +1,3 @@
 You are an Agent
 
-{{ variable_name }}
+{{ agent_name }}

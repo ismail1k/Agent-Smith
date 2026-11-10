@@ -1,4 +1,4 @@
-from vendor import Console
+from utilities import Console
 from plugins.MCPPlugin import Server as MCPServer
 
 
