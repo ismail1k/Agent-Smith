@@ -40,7 +40,7 @@ def run_command() -> None:
 
 
 if __name__ == "__main__":
-    server = Server("MBPP Tools")
+    server = Server("SWE-bench Tools")
     server.add_tool(read_file)
     server.add_tool(edit_file)
     server.add_tool(list_files)
