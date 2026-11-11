@@ -1,5 +1,5 @@
 from fastmcp.tools import tool
-from src.plugins.MCPPlugin import Server
+from src.services.MCPService import Server
 
 
 @tool()

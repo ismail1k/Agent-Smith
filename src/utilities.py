@@ -3,10 +3,6 @@ from abc import ABC
 from typing import Any
 
 
-class Console(ABC):
-    pass
-
-
 def template(name: str, **kwargs) -> str:
     with open(f"src/resources/templates/{name}.md") as file:
         content: str = file.read()
@@ -17,3 +13,7 @@ def template(name: str, **kwargs) -> str:
                 content
             )
         return content
+
+
+class Console(ABC):
+    pass

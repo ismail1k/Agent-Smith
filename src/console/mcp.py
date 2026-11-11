@@ -1,9 +1,15 @@
-from utilities import Console
-from plugins.MCPPlugin import Server as MCPServer
+from src.utilities import Console
+from src.services.MCPService import Server as MCPServer
 
 
-class MCPServe(Console):
-    """Run MCP Server"""
+class mcp(Console):
     def __init__(self) -> None:
-        server: MCPServer = MCPServer()
-        server.http()
+        self.server: MCPServer = MCPServer()
+
+    def stdio(self) -> None:
+        """Serve using stdio"""
+        self.server.stdio()
+
+    def http(self) -> None:
+        """Serve using http"""
+        self.server.http()

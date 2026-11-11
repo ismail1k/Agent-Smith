@@ -1,11 +1,12 @@
 import importlib
 import inspect
 import pkgutil
-import console
 from fire import Fire
 
 
-def load_cli_commands(package):
+def load_cli_commands():
+    import src.console as package
+
     commands = {}
     for _, module_name, _ in pkgutil.iter_modules(package.__path__):
         module = importlib.import_module(f"{package.__name__}.{module_name}")
@@ -17,4 +18,4 @@ def load_cli_commands(package):
     return commands
 
 if __name__ == "__main__":
-    Fire(load_cli_commands(console))
+    Fire(load_cli_commands())
