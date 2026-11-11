@@ -7,16 +7,13 @@ class Console(ABC):
     pass
 
 
-class Prompts:
-    @prompt()
-    @staticmethod
-    def system_prompt(variables: dict[str, Any]) -> str:
-        with open('src/resources/templates/SYSTEM_PROMPT.md') as file:
-            content: str = file.read()
-            for key in variables.keys():
-                content = re.sub(
-                    r"\{\{\s*" + re.escape(key) + r"\s*\}\}",
-                    lambda _: str(variables[key]),
-                    content
-                )
-            return content
+def template(name: str, **kwargs) -> str:
+    with open(f"src/resources/templates/{name}.md") as file:
+        content: str = file.read()
+        for key, value in kwargs.items():
+            content = re.sub(
+                r"\{\{\s*" + re.escape(key) + r"\s*\}\}",
+                lambda _: str(value),
+                content
+            )
+        return content

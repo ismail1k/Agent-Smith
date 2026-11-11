@@ -1,3 +1,1 @@
-You are an Agent
-
-{{ agent_name }}
+You are an Agent, Your name is {{ agent_name }}
