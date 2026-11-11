@@ -25,7 +25,7 @@ if __name__ == '__main__':
     print(llm.chat([
         {
             'role': "system",
-            'content': template('SYSTEM_PROMPT', {'agent_name': 'Smith'})
+            'content': template('SYSTEM_PROMPT', agent_name="Smith")
         },
         {
             'role': "user",
