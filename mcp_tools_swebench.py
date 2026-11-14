@@ -1,5 +1,5 @@
 from fastmcp.tools import tool
-from src.services.MCPService import Server
+from src.services import MCPServer
 
 
 @tool()
@@ -40,7 +40,7 @@ def run_command() -> None:
 
 
 if __name__ == "__main__":
-    server = Server("SWE-bench Tools")
+    server = MCPServer("SWE-bench Tools")
     server.add_tool(read_file)
     server.add_tool(edit_file)
     server.add_tool(list_files)

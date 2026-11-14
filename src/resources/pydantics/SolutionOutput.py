@@ -1,4 +1,5 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+from src.resources.pydantics import StepMetrics
 
 
 class SolutionOutput(BaseModel):

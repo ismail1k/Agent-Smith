@@ -3,6 +3,7 @@ from src.services.MCPService import Server as MCPServer
 
 
 class mcp(Console):
+    """Commands related to MCP Server"""
     def __init__(self) -> None:
         self.server: MCPServer = MCPServer()
 

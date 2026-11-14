@@ -1,21 +1,6 @@
-import importlib
-import inspect
-import pkgutil
 from fire import Fire
+import src.console as package
 
-
-def load_cli_commands():
-    import src.console as package
-
-    commands = {}
-    for _, module_name, _ in pkgutil.iter_modules(package.__path__):
-        module = importlib.import_module(f"{package.__name__}.{module_name}")
-        for name, obj in inspect.getmembers(module):
-            if inspect.isfunction(obj) or inspect.isclass(obj):
-                if obj.__module__ == module.__name__:
-                    commands[name] = obj
-
-    return commands
 
 if __name__ == "__main__":
-    Fire(load_cli_commands())
+    Fire(package)
