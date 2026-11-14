@@ -8,7 +8,6 @@ class LLMService(ABC):
     def __init__(self, base_url: str, model: str) -> None:
         self.model: str = model
         self.base_url: str = base_url
-        self.headers: dict = {"Accept": "application/json"}
 
     def _endpoint(self, path: str) -> str:
         return f"{self.base_url.rstrip('/')}/{path.lstrip('/')}"
@@ -18,7 +17,7 @@ class LLMService(ABC):
         pass
 
 
-class LLMUsageTracker(ABC):
+class LLMMetrics(ABC):
     def __init__(self) -> None:
         self.__usage: int = 0
 
@@ -31,15 +30,26 @@ class LLMUsageTracker(ABC):
         self.__usage += tokens
 
 
-class OpenAI(Service, LLMService, LLMUsageTracker):
-    def __init__(self, base_url: str = 'http://127.0.0.1:11434/v1', model: str = 'qwen2.5-coder:3b') -> None:
-        LLMService.__init__(self, base_url, model)
-        LLMUsageTracker.__init__(self)
+class OpenAI(Service, LLMService, LLMMetrics):
+    def __init__(self, system_prompt: str) -> None:
+        LLMService.__init__(self, 'http://127.0.0.1:11434/v1', 'qwen2.5-coder:3b')
+        LLMMetrics.__init__(self)
+        self.messages: list = []
+        self.messages.append({'role': "system", 'content': system_prompt})
 
-    def chat(self, messages: list, stream: bool = True) -> dict:
-        endpoint: str = self._endpoint('chat/completions')
-        payload: dict = {'model': self.model, 'messages': messages, 'stream': stream, 'stream_options': {'include_usage': True}}
-        response = requests.post(endpoint, json=payload, headers=self.headers, stream=stream)
+    def chat(self, prompt: str, tools: list = [], stream: bool = True) -> dict:
+        self.messages.append({'role': "user", 'content': prompt})
+        response = requests.post(
+            self._endpoint('chat/completions'),
+            stream=stream, json={
+                'model': self.model,
+                'messages': self.messages,
+                'stream': stream,
+                'stream_options': {
+                    'include_usage': True
+                }
+            },
+        )
         if stream == False:
             return response.json()
         chunks: list = []

@@ -1,4 +1,4 @@
-from src.utilities import Console
+from src.utilities.interfaces import Console
 
 
 class agent(Console):
