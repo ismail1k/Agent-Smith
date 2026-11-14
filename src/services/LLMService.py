@@ -20,13 +20,15 @@ class LLMService(ABC):
 
 class LLMUsageTracker(ABC):
     def __init__(self) -> None:
-        self.__usage: dict = {}
+        self.__usage: int = 0
 
-    def track(self, usage: dict) -> None:
-        self.__usage: dict = usage
-
-    def usage(self) -> dict:
+    @property
+    def usage(self) -> int:
         return self.__usage
+
+    @usage.setter
+    def usage(self, tokens: int) -> None:
+        self.__usage += tokens
 
 
 class OpenAI(Service, LLMService, LLMUsageTracker):
@@ -36,15 +38,19 @@ class OpenAI(Service, LLMService, LLMUsageTracker):
 
     def chat(self, messages: list, stream: bool = True) -> dict:
         endpoint: str = self._endpoint('chat/completions')
-        payload: dict = {'model': self.model, 'messages': messages, 'stream': stream}
+        payload: dict = {'model': self.model, 'messages': messages, 'stream': stream, 'stream_options': {'include_usage': True}}
         response = requests.post(endpoint, json=payload, headers=self.headers, stream=stream)
-        for line in response.iter_lines():
-            if line:
-                line = line.decode("utf-8")
-                if line.startswith("data: "):
-                    data = line[6:]
-                    if data == "[DONE]":
-                        break
-                    chunk = json.loads(data)
-                    yield chunk["choices"][0]["delta"].get("content", "")
-        return {}
+        if stream == False:
+            return response.json()
+        chunks: list = []
+        for chunk in response.iter_lines():
+            chunk = chunk.decode("utf-8")
+            if chunk.startswith("data: "):
+                if '[DONE]' in chunk:
+                    break
+                content = json.loads(chunk[6:])
+                chunks.append(content)
+                if len(content['choices']):
+                    yield content['choices'][0]['delta']['content']
+                if 'usage' in content:
+                    self.usage = content['usage']['total_tokens']
