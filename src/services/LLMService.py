@@ -5,15 +5,15 @@ from src.utilities.interfaces import Service
 
 
 class LLMService(ABC):
-    def __init__(self, base_url: str, model: str) -> None:
-        self.model: str = model
-        self.base_url: str = base_url
+    def __init__(self) -> None:
+        self.model: str = 'http://127.0.0.1:11434/v1'
+        self.base_url: str = 'qwen2.5-coder:3b'
 
     def _endpoint(self, path: str) -> str:
         return f"{self.base_url.rstrip('/')}/{path.lstrip('/')}"
 
     @abstractmethod
-    def chat(self, messages: list, stream: bool = True) -> dict:
+    def chat(self, prompt: str, tools: list = [], stream: bool = True) -> dict:
         pass
 
 
@@ -32,10 +32,9 @@ class LLMMetrics(ABC):
 
 class OpenAI(Service, LLMService, LLMMetrics):
     def __init__(self, system_prompt: str) -> None:
-        LLMService.__init__(self, 'http://127.0.0.1:11434/v1', 'qwen2.5-coder:3b')
-        LLMMetrics.__init__(self)
         self.messages: list = []
         self.messages.append({'role': "system", 'content': system_prompt})
+        super().__init__()
 
     def chat(self, prompt: str, tools: list = [], stream: bool = True) -> dict:
         self.messages.append({'role': "user", 'content': prompt})

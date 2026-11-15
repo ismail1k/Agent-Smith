@@ -14,6 +14,8 @@ class AgentMBPP(Console):
         canvas = TextManager()
         prompt: str = "Write a function to find the similar elements from the given two tuple lists.\nfunction_definition: def similar_elements(test_tup1, test_tup2):"
         llm = OpenAI(template('SYSTEM_PROMPT', agent_name="Smith"))
+        llm.base_url = os.getenv('PROVIDER_URL')
+        llm.model = os.getenv('MODEL')
         for word in llm.chat(prompt):
             print(word, flush=True, end="")
             canvas.append(word)
